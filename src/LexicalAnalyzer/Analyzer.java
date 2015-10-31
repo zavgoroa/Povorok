@@ -1,10 +1,8 @@
 package LexicalAnalyzer;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by kodoo on 09.10.2015.
@@ -131,78 +129,27 @@ class Analyzer {
     }
 
     private void initMapKeyWord() {
-        mapProcessSeqWord.put("Нужно", new ProcessorSequenceWord(
-                new String[]{"Нужно", "купить"},
-                Token.TokensType.INGR));
-        mapProcessSeqWord.put("Способ", new ProcessorSequenceWord(
-                new String[]{"Способ", "приготовления"},
-                Token.TokensType.METHOD));
-        mapProcessSeqWord.put("г", new ProcessorSequenceWord(
-                new String[]{"г"},
-                Token.TokensType.M_G));
-        mapProcessSeqWord.put("кг", new ProcessorSequenceWord(
-                new String[]{"кг"},
-                Token.TokensType.M_KG));
-        mapProcessSeqWord.put("ч.л", new ProcessorSequenceWord(
-                new String[]{"ч.л"},
-                Token.TokensType.M_CHL));
-        mapProcessSeqWord.put("шт", new ProcessorSequenceWord(
-                new String[]{"шт"},
-                Token.TokensType.M_SHT));
-        mapProcessSeqWord.put("мл", new ProcessorSequenceWord(
-                new String[]{"мл"},
-                Token.TokensType.M_ML));
-        mapProcessSeqWord.put("л", new ProcessorSequenceWord(
-                new String[]{"л"},
-                Token.TokensType.M_L));
-        mapProcessSeqWord.put("ст.л", new ProcessorSequenceWord(
-                new String[]{"ст.л"},
-                Token.TokensType.M_STL));
-        mapProcessSeqWord.put("Возьмите", new ProcessorSequenceWord(
-                new String[]{"Возьмите", "из", "холодильника"},
-                Token.TokensType.STDIN));
-        mapProcessSeqWord.put("Положите", new ProcessorSequenceWord(
-                new String[]{"Положите", "в", "холодильник"},
-                Token.TokensType.STDOUT));
-        mapProcessSeqWord.put("Отправте", new ProcessorSequenceWord(
-                new String[]{"Отправте", "блюдо", "в", "холодильник", "часов", "на"},
-                Token.TokensType.STDOUTSTACK));
-        mapProcessSeqWord.put("Добавте", new ProcessorSequenceWord(
-                new String[]{"Добавте"},
-                Token.TokensType.PUSH));
-        mapProcessSeqWord.put("Положите", new ProcessorSequenceWord(
-                new String[]{"Положите"},
-                Token.TokensType.POP));
-        mapProcessSeqWord.put("Почистите", new ProcessorSequenceWord(
-                new String[]{"Почистите"},
-                Token.TokensType.ADD));
-        mapProcessSeqWord.put("Натрите", new ProcessorSequenceWord(
-                new String[]{"Натрите", "на", "тёрке"},
-                Token.TokensType.SUB));
-        mapProcessSeqWord.put("Замешайте", new ProcessorSequenceWord(
-                new String[]{"Замешайте"},
-                Token.TokensType.MUL));
-        mapProcessSeqWord.put("Нарезать", new ProcessorSequenceWord(
-                new String[]{"Нарезать"},
-                Token.TokensType.DIV));
-        mapProcessSeqWord.put("Вымочить", new ProcessorSequenceWord(
-                new String[]{"Вымочить"},
-                Token.TokensType.LCAST));
-        mapProcessSeqWord.put("Добавить", new ProcessorSequenceWord(
-                new String[]{"Добавить", "воды"},
-                Token.TokensType.STACKCAST));
-        mapProcessSeqWord.put("Подготовте", new ProcessorSequenceWord(
-                new String[]{"Подготовте", "чистую", "посуду"},
-                Token.TokensType.CLR));
-        mapProcessSeqWord.put("Начинайте", new ProcessorSequenceWord(
-                new String[]{"Начинайте"},
-                Token.TokensType.WHILE));
-        mapProcessSeqWord.put("до", new ProcessorSequenceWord(
-                new String[]{"до"},
-                Token.TokensType.UNTIL));
-        mapProcessSeqWord.put("Отложите", new ProcessorSequenceWord(
-                new String[]{"Отложите", "всё", "в", "сторону"},
-                Token.TokensType.BREAK));
+
+        try (BufferedReader br = new BufferedReader(new FileReader(new File("Files/f")))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Scanner scan = new Scanner(line);
+
+                String tokenType = scan.next();
+                LinkedList<String> tokenValue = new LinkedList<>();
+
+                while (scan.hasNext())
+                    tokenValue.add(scan.next());
+
+                System.out.printf("%s : %s\n", tokenType, tokenValue);
+
+                mapProcessSeqWord.put(tokenValue.get(0), new ProcessorSequenceWord(
+                        tokenValue.toArray(new String[0]),
+                        Token.TokensType.valueOf(tokenType)));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
