@@ -2,7 +2,6 @@ package LexicalAnalyzer;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Created by kodoo on 09.10.2015.
@@ -34,33 +33,41 @@ class Analyzer {
             for (int i = 0; i < words.length; ++i) {
 
                 if (isNumeric(words[i])) {
+                    saveReadWord = addToken(saveReadWord.trim().toLowerCase());
                     addConstants(words[i]);
-                    saveReadWord = addToken(true, saveReadWord);
                     continue;
                 }
 
                 ProcessorSequenceWord keyWordProcess = mapProcessSeqWord.get(words[i]);
                 if (keyWordProcess == null) {
-                    saveReadWord += words[i] + " ";
+                    int index = listId.indexOf(words[i].trim());
+                    if (index < 0) {
+                        saveReadWord += words[i].trim() + " ";
+                    } else {
+                        saveReadWord = addToken(words[i].trim().toLowerCase());
+                    }
                 } else {
                     Token token = keyWordProcess.processSequence(words, i);
                     i += keyWordProcess.sizeSequenceWord() - 1;
                     listTokens.add(token);
                 }
             }
-            saveReadWord = addToken(true, saveReadWord);
+            saveReadWord = addToken(saveReadWord.trim().toLowerCase());
             listTokens.add(new Token(Token.TokensType.SRPT, -1));
         }
     }
 
-    private String addToken(boolean state, String id) {
-        if (state && !id.isEmpty()) {
-            listId.add(id);
-            listTokens.add(new Token(Token.TokensType.ID, listId.size() - 1));
-            //listTokens.add(new Token(Token.TokensType.SRPT, -1));
-            id = "";
+    private String addToken(String id) {
+        if (!id.isEmpty()) {
+            int index = listId.indexOf(id);
+            if (index < 0) {
+                listId.add(id);
+                listTokens.add(new Token(Token.TokensType.ID, listId.size() - 1));
+            } else {
+                listTokens.add(new Token(Token.TokensType.ID, index));
+            }
         }
-        return id;
+        return "";
     }
 
     private void addConstants(String word) {
@@ -130,26 +137,30 @@ class Analyzer {
 
     private void initMapKeyWord() {
 
-        try (BufferedReader br = new BufferedReader(new FileReader(new File("Files/f")))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                Scanner scan = new Scanner(line);
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream("Files/f"), "Cp1251"))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        Scanner scan = new Scanner(line);
 
-                String tokenType = scan.next();
-                LinkedList<String> tokenValue = new LinkedList<>();
+                        String tokenType = scan.next();
+                        LinkedList<String> tokenValue = new LinkedList<>();
 
-                while (scan.hasNext())
-                    tokenValue.add(scan.next());
+                        while (scan.hasNext()) {
+                            String word = scan.next();
+                            tokenValue.add(word);
+                        }
 
-                System.out.printf("%s : %s\n", tokenType, tokenValue);
+                        System.out.printf("%s : %s\n", tokenType, tokenValue);
 
-                mapProcessSeqWord.put(tokenValue.get(0), new ProcessorSequenceWord(
-                        tokenValue.toArray(new String[0]),
-                        Token.TokensType.valueOf(tokenType)));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                        mapProcessSeqWord.put(tokenValue.get(0), new ProcessorSequenceWord(
+                                tokenValue.toArray(new String[0]),
+                                Token.TokensType.valueOf(tokenType)));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
     }
 
     /**
@@ -158,8 +169,8 @@ class Analyzer {
      * @throws IOException
      */
     public static void main(String[] args) throws TokenException, IOException {
-        System.out.println("Working Directory = " +
-                System.getProperty("user.dir"));
+        System.out.println("Working Directory = "
+                + System.getProperty("user.dir"));
         FileInputStream fileStream = new FileInputStream("Files/source.chef");
         Analyzer analyzer = new Analyzer(fileStream);
         analyzer.showResultAnalyzer();
