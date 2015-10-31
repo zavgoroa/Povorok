@@ -27,13 +27,13 @@ class Analyzer {
         String saveReadWord = "";
         while (scanner.hasNext()) {
             String row = scanner.next();
-            row = row.trim();
+            row = row.trim().toLowerCase();
             String[] words = row.split("[ \\t]+");
 
             for (int i = 0; i < words.length; ++i) {
 
                 if (isNumeric(words[i])) {
-                    saveReadWord = addToken(saveReadWord.trim().toLowerCase());
+                    saveReadWord = addToken(saveReadWord.trim());
                     addConstants(words[i]);
                     continue;
                 }
@@ -44,7 +44,8 @@ class Analyzer {
                     if (index < 0) {
                         saveReadWord += words[i].trim() + " ";
                     } else {
-                        saveReadWord = addToken(words[i].trim().toLowerCase());
+                        saveReadWord = addToken(saveReadWord.trim());
+                        addToken(words[i].trim());
                     }
                 } else {
                     Token token = keyWordProcess.processSequence(words, i);
@@ -52,7 +53,7 @@ class Analyzer {
                     listTokens.add(token);
                 }
             }
-            saveReadWord = addToken(saveReadWord.trim().toLowerCase());
+            saveReadWord = addToken(saveReadWord.trim());
             listTokens.add(new Token(Token.TokensType.SRPT, -1));
         }
     }
@@ -73,7 +74,7 @@ class Analyzer {
     private void addConstants(String word) {
         Double value = Double.parseDouble(word);
         listConstans.add(value);
-        listTokens.add(new Token(Token.TokensType.CI, listId.size() - 1));
+        listTokens.add(new Token(Token.TokensType.CI, listConstans.size() - 1));
     }
 
     private boolean isNumeric(String word) {
@@ -149,7 +150,7 @@ class Analyzer {
 
                         while (scan.hasNext()) {
                             String word = scan.next();
-                            tokenValue.add(word);
+                            tokenValue.add(word.toLowerCase());
                         }
 
                         System.out.printf("%s : %s\n", tokenType, tokenValue);
