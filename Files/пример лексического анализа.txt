@@ -21,22 +21,21 @@
 	STDIN ID3 SRPT
 	DIV ID3 SRPT
 	POP ID3 SRPT
-	WHILE MARK1 ID3 SRPT
-	MARK1 ID3 UNTIL SRPT
+	WHILE ID4 ID3 SRPT
+	ID4 ID3 UNTIL ID5 SRPT
 	PUSH ID2 SRPT
 	
 	Таблица ID
 	ID1		Утренняя еда
 	ID2		яйцо
 	ID3		колбасу
+	ID4		жарить
+	ID5		хрустящей корочки
 	
 	Таблица констант
 	CI1		4
 	CI2		200
-	
-	Таблица маркеров
-	MARK1	жарить
-	
+
 	
 
 
