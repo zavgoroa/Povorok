@@ -8,22 +8,22 @@
 <Comments> ::= <String>.
 
 <Ingredient List> ::= 
-	Ингредиенты.
+	Нужно купить.
 	{<ingredient-name> <initial-value> [<measure>]}
 	
 <ingredient-name> ::= <String>
 <initial-value> ::= <Integer>
-<measure> ::= г | кг | ч.л. | шт.  	// сухие
-<measure> ::= мл | л | ст.л.		// жидкие
-// Переменные типизируются: сухие - int, жидкие - char
+<measure> ::= г | кг | чл | шт  	// сухие
+<measure> ::= мл | л | стл			// жидкие
+// Переменные типизируются: сухие - short, жидкие - char
 
 <Method> ::= 
 	Способ приготовления.
-	<Method statement>
+	{<Method statement>}
 
 <Method statement> := Возьмите из холодильника <ingredient>.	//STDIN -> ingredient
 <Method statement> ::= Положите в холодильник <ingredient> .		//ingredient -> STDOUT
-<Method statement> ::= Отправте блюдо в холодильник часа на <Integer>.	// Integer элементов стэка -> STDOUT
+<Method statement> ::= Отправте блюдо в холодильник.	// элементов стэка -> STDOUT
 
 <Method statement> := Добавте <ingredient>. 	// push
 <Method statement> := Положите <ingredient>. 	// pop
@@ -34,6 +34,24 @@
 <Method statement> := Вымочить <ingredient>.	// каст ingredient к жидкому (ASCII)
 <Method statement> := Добавте воды.			// каст стэка к жидкому
 <Method statement> := Подготовте чистую посуду.	// очистит стэк
+
+
+// Оператор ветвления
+<Method statement> := 
+	По желанию <Cond> <Smth>.	// if
+		{<Method statement>}	
+	[При необходимости 			// else
+		{<Method statement>}]	
+	Попробуйте на готовность.	// endif
+		
+<Cond> := посолите		// !=
+<Cond> := поперчите		// ==
+<Cond> := остудите		// >
+<Cond> := подогрейте	// <
+
+<Smth> := <ingredient>
+<Smth> := <>			//Если ингредиент не указан, сравнивать с верхушкой стэка
+
 
 // Петли
 <Method statement> := 
@@ -46,38 +64,3 @@
 	
 <Method statement> := Отложите всё в сторону.	// break
 
- 
-
-
-	
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
