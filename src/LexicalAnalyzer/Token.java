@@ -4,7 +4,7 @@ package LexicalAnalyzer;
  * Created by kodoo on 09.10.2015.
  */
 
-class Token {
+public class Token {
 
     private final TokensType type;
     private String[] keyWord;
@@ -38,6 +38,17 @@ class Token {
 
     public String[] getKeyWordForTokens() {
         return keyWord;
+    }
+
+    static public boolean isTokenType(String str) {
+        try {
+            TokensType.valueOf(str);
+        }
+        catch (IllegalArgumentException e) {
+            return false;
+        }
+
+        return true;
     }
 }
 

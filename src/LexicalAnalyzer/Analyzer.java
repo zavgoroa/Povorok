@@ -164,16 +164,16 @@ class Analyzer {
                 }
     }
 
-    /**
-     * @param args
-     * @throws TokenException
-     * @throws IOException
-     */
-    public static void main(String[] args) throws TokenException, IOException {
-        System.out.println("Working Directory = "
-                + System.getProperty("user.dir"));
-        FileInputStream fileStream = new FileInputStream("Files/source.chef");
-        Analyzer analyzer = new Analyzer(fileStream);
-        analyzer.showResultAnalyzer();
-    }
+//    /**
+//     * @param args
+//     * @throws TokenException
+//     * @throws IOException
+//     */
+//    public static void main(String[] args) throws TokenException, IOException {
+//        System.out.println("Working Directory = "
+//                + System.getProperty("user.dir"));
+//        FileInputStream fileStream = new FileInputStream("Files/source.chef");
+//        Analyzer analyzer = new Analyzer(fileStream);
+//        analyzer.showResultAnalyzer();
+//    }
 }
