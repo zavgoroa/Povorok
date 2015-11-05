@@ -7,17 +7,17 @@ import java.util.*;
  * Created by kodoo on 01.11.2015.
  */
 public class Grammar {
-
     Map<Symbol, Set<List<Symbol>>> grammaTable;
 
     public Grammar() {
-        grammaTable = new TreeMap<>((o1, o2) -> {
-            return o1.getValue().compareTo(o2.getValue());
-        });
+        grammaTable = new LinkedHashMap<>();
     }
 
+    public Map<Symbol, Set<List<Symbol>>> getGrammar() {
+        return grammaTable;
+    }
+    
     public void loadFromFile(String fileIn, String charSet) throws IOException {
-
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(fileIn), charSet))) {
@@ -26,28 +26,38 @@ public class Grammar {
             while ((line = br.readLine()) != null) {
                 Scanner scan = new Scanner(line);
 
-                if (!scan.hasNext())
+                if (!scan.hasNext()) {
                     continue;
+                }
 
-                // Левая часть правила вывода
                 Symbol keySymb = new Symbol(scan.next());
 
-                // Дальше должна быть стрелочка
                 String arrow = scan.next();
                 assert(arrow == ">");
 
-                // Записываем правую часть вывода в виде списка символов
                 List<Symbol> ruleList = new LinkedList<>();
                 while (scan.hasNext()) {
                     ruleList.add(new Symbol(scan.next()));
                 }
-
-                // Если левой части в таблице нет
-                if (!grammaTable.containsKey(keySymb)) {
-                    grammaTable.put(keySymb, new HashSet<>());
+                
+                boolean flag = false;
+                Symbol saveFoundSymbol = null;
+                for (Symbol sym : grammaTable.keySet()) {
+                    if (sym.getValue().equals(keySymb.getValue())) {
+                        flag = true;
+                        saveFoundSymbol = sym;
+                        break;
+                    }
                 }
 
-                grammaTable.get(keySymb).add(ruleList);
+                if (!flag) {
+                    grammaTable.put(keySymb, new LinkedHashSet<>());
+                    grammaTable.get(keySymb).add(ruleList);
+                } else {
+                    if (saveFoundSymbol != null) {
+                        grammaTable.get(saveFoundSymbol).add(ruleList);
+                    }
+                }
             }
         }
     }
@@ -65,17 +75,5 @@ public class Grammar {
         }
 
         return sb.toString();
-    }
-
-    public static void main(String[] args) {
-
-        Grammar gr = new Grammar();
-        try {
-            gr.loadFromFile("Files/rules.txt", "Cp1251");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.print(gr);
     }
 }

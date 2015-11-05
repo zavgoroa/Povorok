@@ -1,0 +1,49 @@
+Recipe > RecipeTitle Ingredient_List Method
+
+RecipeTitle > ID
+Ingredient_List > INGR SRPT IngredientLine
+
+IngredientLine > ID CI Measure IngredientLine 
+IngredientLine > ID CI Measure
+
+Measure > M_G
+Measure > M_KG
+Measure > M_CHL
+Measure > M_SHT
+Measure > M_ML
+Measure > M_L
+Measure > M_STL
+
+Method > METHOD SRPT Statements
+
+Statements > Statement Statements
+Statements > Statement 
+
+Statement > STDIN ID SRPT
+Statement > STDOUT ID SRPT
+Statement > STDOUTSTACK ID SRPT
+Statement > PUSH ID SRPT
+Statement > POP ID SRPT
+Statement > ADD ID SRPT
+Statement > SUB ID SRPT
+Statement > MUL ID SRPT
+Statement > DIV ID SRPT
+Statement > LCAST ID SRPT
+
+Statement > STACKCAST SRPT
+Statement > CLR SRPT
+
+Statement > WHILE ID ID SRPT Statements ID ID UNTIL ID SRPT
+    
+Statement > BREAK SRPT
+
+Statement > IF Condition Something Statements ELSE Statements ENDIF SRPT
+Statement > IF Condition Something Statements ENDIF SRPT
+
+Condition > EQ 
+Condition > NEQ
+Condition > GR
+Condition > LESS
+
+Something > ID SRPT
+Something > SRPT
