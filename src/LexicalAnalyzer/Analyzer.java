@@ -6,7 +6,7 @@ import java.util.*;
 /**
  * Created by kodoo on 09.10.2015.
  */
-class Analyzer {
+public class Analyzer {
 
     Map<String, ProcessorSequenceWord> mapProcessSeqWord;
     ArrayList<Token> listTokens;
@@ -92,15 +92,15 @@ class Analyzer {
     }
 
     public ArrayList<String> getListId() {
-        return listId;
+        return (ArrayList<String>) listId.clone();
     }
 
     public ArrayList<Double> getListConstanst() {
-        return listConstans;
+        return (ArrayList<Double>) listConstans.clone();
     }
 
     public ArrayList<Token> getListTokens() {
-        return listTokens;
+        return (ArrayList<Token>) listTokens.clone();
     }
 
     public void showResultAnalyzer() {
@@ -163,17 +163,4 @@ class Analyzer {
                     e.printStackTrace();
                 }
     }
-
-//    /**
-//     * @param args
-//     * @throws TokenException
-//     * @throws IOException
-//     */
-//    public static void main(String[] args) throws TokenException, IOException {
-//        System.out.println("Working Directory = "
-//                + System.getProperty("user.dir"));
-//        FileInputStream fileStream = new FileInputStream("Files/source.chef");
-//        Analyzer analyzer = new Analyzer(fileStream);
-//        analyzer.showResultAnalyzer();
-//    }
 }

@@ -10,7 +10,7 @@ public class Token {
     private String[] keyWord;
     private int index;
 
-    enum TokensType {
+    public enum TokensType {
         ID, CI, SRPT, MARK, INGR, METHOD, M_G, M_KG, M_CHL, M_SHT, M_ML, M_L,
         M_STL, STDIN, STDOUT, STDOUTSTACK, PUSH, POP, ADD, SUB, MUL, DIV, LCAST,
         STACKCAST, CLR, WHILE, UNTIL, BREAK, IF, ELSE, NEQ, EQ, GR, LES, ENDIF;
