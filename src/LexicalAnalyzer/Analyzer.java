@@ -163,4 +163,12 @@ public class Analyzer {
                     e.printStackTrace();
                 }
     }
+
+    public static void main(String[] args) throws TokenException, IOException {
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        FileInputStream fileStream = new FileInputStream("Files/source.chef");
+        Analyzer analyzer = new Analyzer(fileStream);
+        System.out.println();
+        analyzer.showResultAnalyzer();
+    }
 }

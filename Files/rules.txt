@@ -8,41 +8,42 @@ IngredientLine > ID CI Measure
 
 Measure > M_G
 Measure > M_KG
+Measure > M_CHL
 Measure > M_SHT
 Measure > M_ML
 Measure > M_L
+Measure > M_STL
 
 Method > METHOD SRPT Statements
 
 Statements > Statement Statements
-Statements > Statement SRPT
+Statements > Statement 
 
-Statement > ID GETBYINDEX ID
+Statement > STDIN ID SRPT
+Statement > STDOUT ID SRPT
+Statement > STDOUTSTACK ID SRPT
+Statement > PUSH ID SRPT
+Statement > POP ID SRPT
+Statement > ADD ID SRPT
+Statement > SUB ID SRPT
+Statement > MUL ID SRPT
+Statement > DIV ID SRPT
+Statement > LCAST ID SRPT
 
-Statement > ID SET Arithmetic
+Statement > STACKCAST SRPT
+Statement > CLR SRPT
 
-Arithmetic > ID
-Arithmetic > Operation Arithmetic AND Arithmetic
+Statement > WHILE ID ID SRPT Statements ID ID UNTIL ID SRPT
+    
+Statement > BREAK SRPT
 
-Operation > ADD
-Operation > SUB
-Operation > MUL
-Operation > DIV
-
-Statement > STDIN ID
-Statement > STDOUT ID
-
-Statement > LCAST ID
-
-Statement > IF Condition ID AND ID Statements ELSE Statements ENDIF SRPT
-Statement > IF Condition ID AND ID Statements ENDIF SRPT
+Statement > IF Condition Something Statements ELSE Statements ENDIF SRPT
+Statement > IF Condition Something Statements ENDIF SRPT
 
 Condition > EQ 
 Condition > NEQ
 Condition > GR
 Condition > LESS
 
-Statement > WHILE ID ID SRPT Statements ID ID UNTIL 
-Statement > WHILE ID SRPT Statements ID UNTIL 
-
-Statement > BREAK 
+Something > ID SRPT
+Something > SRPT

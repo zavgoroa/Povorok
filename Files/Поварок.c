@@ -1,9 +1,11 @@
 <Recipe> ::= 
 	<Recipe Title>
+	[<Comments>]
 	<Ingredient List>
 	<Method>
 
 <Recipe Title> ::= <String>.
+<Comments> ::= <String>.
 
 <Ingredient List> ::= 
 	Нужно купить.
@@ -11,62 +13,51 @@
 	
 <ingredient-name> ::= <String>
 <initial-value> ::= <Integer>
-<measure> ::= шт		// массив
-<measure> ::= г | кг 	// сухие
-<measure> ::= мл | л 	// жидкие
+<measure> ::= г | кг | чл | шт  	// сухие
+<measure> ::= мл | л | стл			// жидкие
 // Переменные типизируются: сухие - short, жидкие - char
 
 <Method> ::= 
 	Способ приготовления.
-	{<Method statement>.}
+	{<Method statement>}
 
-// Операции с массивом
-// обратиться по индексу
-<Method statement> ::= <ingredient> в таком же количестве как <ingredient> 
+<Method statement> := Возьмите из холодильника <ingredient>.	//STDIN -> ingredient
+<Method statement> ::= Положите в холодильник <ingredient> .		//ingredient -> STDOUT
+<Method statement> ::= Отправте блюдо в холодильник.	// элементов стэка -> STDOUT
 
-// Присвоение переменной значения
-<Method statement> ::= <ingredient> замените на <Arithmetic>
+<Method statement> := Добавте <ingredient>. 	// push
+<Method statement> := Положите <ingredient>. 	// pop
+<Method statement> := Почистите <ingredient>. 	// + с top и push в стэк
+<Method statement> := Натрите на тёрке <ingredient>. 	// - с top и push в стэк
+<Method statement> := Замешайте <ingredient>.	// * с top и push в стэк
+<Method statement> := Нарежте <ingredient>. 	// / с top и push в стэк
+<Method statement> := Вымочить <ingredient>.	// каст ingredient к жидкому (ASCII)
+<Method statement> := Добавте воды.			// каст стэка к жидкому
+<Method statement> := Подготовте чистую посуду.	// очистит стэк
 
-<Arithmetic> ::= <ingredient>
-<Arithmetic> ::= <Operation> <Arithmetic> и <Arithmetic>
-
-<Operation> ::= смешанные 					// +
-<Operation> ::= взятые в нужном количестве 	// -
-<Operation> ::= перемешанные 				// *
-<Operation> ::= размешанные 				// /
-
-<Method statement> ::= Возьмите из холодильника <ingredient>	//STDIN -> ingredient
-<Method statement> ::= Положите в холодильник <ingredient> 		//ingredient -> STDOUT
-
-<Method statement> := Вымочить <ingredient>	// каст ingredient к жидкому (ASCII)
 
 // Оператор ветвления
 <Method statement> := 
-	По желанию <Condition>.		// if
+	По желанию <Cond> <Smth>.	// if
 		{<Method statement>}	
 	[При необходимости 			// else
 		{<Method statement>}]	
-	Попробуйте на готовность	// endif
-	
-<Condition> ::= <Cond> <ingredient> и <ingredient>
-	
+	Попробуйте на готовность.	// endif
+		
 <Cond> := посолите		// !=
 <Cond> := поперчите		// ==
 <Cond> := остудите		// >
 <Cond> := подогрейте	// <
+
+<Smth> := <ingredient>
+<Smth> := <>			//Если ингредиент не указан, сравнивать с верхушкой стэка
 
 
 // Петли
 <Method statement> := 
 	Начинайте <Verb> <ingredient>. 		// начало цикла while ingredient != 0
 	{<Method statement>}				// тело цикла
-	<Verb> <ingredient> до готовности.	// конец цикла, ingredient--, String - комментарий
-	
-<Method statement> := 
-	Начинайте <Verb>. 					// начало цикла while true
-	{<Method statement>}				// тело цикла
-	<Verb> до готовности.	// конец цикла, ingredient--, String - комментарий
-	
+	<Verb> <ingredient> до <String>.	// конец цикла, ingredient--, String - комментарий
 	// Пример:
 	// Начинайте резать марковь. [тело цикла] Резать марковь до круглых колечек.  
 	// Начинайте курить сигареты. [тело цикла] Курить сигареты до посинения.	
