@@ -22,7 +22,6 @@ public class Analyzer {
 
         BufferedInputStream inputStream = new BufferedInputStream(fileStream);
         Scanner scanner = new Scanner(inputStream, "UTF-8");
-        scanner.useDelimiter("[\\r\\n\\.]+");
 
         String saveReadWord = "";
         while (scanner.hasNext()) {
