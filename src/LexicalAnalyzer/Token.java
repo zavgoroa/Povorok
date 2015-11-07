@@ -14,7 +14,7 @@ public class Token {
         ID, CI, SRPT, MARK, INGR, METHOD, M_G, M_KG, M_CHL, M_SHT, M_ML, M_L,
         M_STL, STDIN, STDOUT, STDOUTSTACK, PUSH, POP, ADD, SUB, MUL, DIV, LCAST,
         STACKCAST, CLR, WHILE, UNTIL, BREAK, IF, ELSE, NEQ, EQ, GR, LES, ENDIF,
-        AND, SET, GETBYINDEX;
+        AND, SET, GETBYINDEX, e;
     }
 
     public Token(TokensType type, String[] keyWord) {
@@ -29,7 +29,13 @@ public class Token {
         this.keyWord = new String[]{};
     }
 
-    public TokensType getTypeToken() {
+    public Token(TokensType type) {
+        this.type = type;
+        this.index = -1;
+        this.keyWord = new String[]{};
+    }
+
+    public TokensType getTokenType() {
         return type;
     }
 

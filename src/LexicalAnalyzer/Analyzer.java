@@ -116,22 +116,22 @@ public class Analyzer {
 
         for (int i = 0; i < listTokens.size(); ++i) {
             Token token = listTokens.get(i);
-            if (token.getTypeToken() == Token.TokensType.ID) {
-                System.out.print(token.getTypeToken().toString() + token.getIndex() + " ");
+            if (token.getTokenType() == Token.TokensType.ID) {
+                System.out.print(token.getTokenType().toString() + token.getIndex() + " ");
                 continue;
             }
-            if (token.getTypeToken() == Token.TokensType.CI) {
-                System.out.print(token.getTypeToken().toString() + token.getIndex() + " ");
+            if (token.getTokenType() == Token.TokensType.CI) {
+                System.out.print(token.getTokenType().toString() + token.getIndex() + " ");
                 continue;
             }
 
-            if (token.getTypeToken() == Token.TokensType.SRPT) {
-                System.out.print(token.getTypeToken().toString() + " ");
+            if (token.getTokenType() == Token.TokensType.SRPT) {
+                System.out.print(token.getTokenType().toString() + " ");
                 System.out.println();
                 continue;
             }
 
-            System.out.print(token.getTypeToken().toString() + " ");
+            System.out.print(token.getTokenType().toString() + " ");
 
         }
     }
@@ -170,5 +170,13 @@ public class Analyzer {
         Analyzer analyzer = new Analyzer(fileStream);
         System.out.println();
         analyzer.showResultAnalyzer();
+
+        Stack<Token> st = new Stack<>();
+        st.addAll(analyzer.getListTokens());
+        Collections.reverse(st);
+
+        while (!st.isEmpty()) {
+            System.out.println(st.pop().getTokenType());
+        }
     }
 }

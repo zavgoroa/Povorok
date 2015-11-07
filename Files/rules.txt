@@ -4,46 +4,58 @@ RecipeTitle > ID
 Ingredient_List > INGR SRPT IngredientLine
 
 IngredientLine > ID CI Measure IngredientLine 
-IngredientLine > ID CI Measure
+IngredientLine > e
 
 Measure > M_G
 Measure > M_KG
-Measure > M_CHL
 Measure > M_SHT
 Measure > M_ML
 Measure > M_L
-Measure > M_STL
 
 Method > METHOD SRPT Statements
 
-Statements > Statement Statements
-Statements > Statement 
+Statements > Statement SRPT Statements
+Statements > e
 
-Statement > STDIN ID SRPT
-Statement > STDOUT ID SRPT
-Statement > STDOUTSTACK ID SRPT
-Statement > PUSH ID SRPT
-Statement > POP ID SRPT
-Statement > ADD ID SRPT
-Statement > SUB ID SRPT
-Statement > MUL ID SRPT
-Statement > DIV ID SRPT
-Statement > LCAST ID SRPT
+Statement > ID IdOperation
 
-Statement > STACKCAST SRPT
-Statement > CLR SRPT
+IdOperation > GETBYINDEX ID
+IdOperation > SET Arithmetic
 
-Statement > WHILE ID ID SRPT Statements ID ID UNTIL ID SRPT
-    
-Statement > BREAK SRPT
+Arithmetic > ID
+Arithmetic > Operation Arithmetic AND Arithmetic
 
-Statement > IF Condition Something Statements ELSE Statements ENDIF SRPT
-Statement > IF Condition Something Statements ENDIF SRPT
+Operation > ADD
+Operation > SUB
+Operation > MUL
+Operation > DIV
+
+Statement > STDIN ID
+Statement > STDOUT ID
+
+Statement > LCAST ID
+
+Statement > IF Condition ID AND ID Statements ElseStatement 
+
+ElseStatement > ELSE Statements ENDIF
+ElseStatement > ENDIF
 
 Condition > EQ 
 Condition > NEQ
 Condition > GR
-Condition > LESS
+Condition > LES
 
-Something > ID SRPT
-Something > SRPT
+Statement > WHILE ID LoopBody EndLoop 
+
+LoopBody > ID SRPT Statements ID
+LoopBody > SRPT Statements ID
+
+EndLoop > ID UNTIL
+EndLoop > UNTIL
+
+Statement > BREAK 
+
+
+
+
+

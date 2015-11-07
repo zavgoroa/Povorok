@@ -25,6 +25,6 @@ public class Symbol {
 
     @Override
     public String toString() {
-        return value + (isTerminal ? " (t)" : "(n)");
+        return value + (isTerminal ? "(t)" : "(n)");
     }
 }
