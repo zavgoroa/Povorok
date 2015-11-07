@@ -115,7 +115,7 @@ public class Grammar {
             if (tokens.isEmpty())
                 token = new Token(Token.TokensType.e);
             else
-                token = tokens.pop();
+                token = tokens.peek();
 
             System.out.printf("st:%s token:%s\n", a.getValue(), token.getTokenType());
 
