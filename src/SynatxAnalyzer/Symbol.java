@@ -27,4 +27,9 @@ public class Symbol {
     public String toString() {
         return value + (isTerminal ? "(t)" : "(n)");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return value.equals(((Symbol)obj).getValue());
+    }
 }

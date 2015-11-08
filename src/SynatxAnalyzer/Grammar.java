@@ -22,7 +22,9 @@ public class Grammar {
             return o1.getValue().compareTo(o2.getValue());
         });
 
-        firsts = new HashMap<>();
+        firsts = new TreeMap<>((o1, o2) -> {
+            return o1.getValue().compareTo(o2.getValue());
+        });
     }
 
     public void loadFromFile(String fileIn, String charSet) throws IOException {
@@ -38,20 +40,20 @@ public class Grammar {
                 if (!scan.hasNext())
                     continue;
 
-                // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+                // Левая часть правила вывода
                 Symbol keySymb = new Symbol(scan.next());
 
-                // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                // Дальше должна быть стрелочка
                 String arrow = scan.next();
                 assert(arrow == ">");
 
-                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                // Записываем правую часть вывода в виде списка символов
                 List<Symbol> ruleList = new LinkedList<>();
                 while (scan.hasNext()) {
                     ruleList.add(new Symbol(scan.next()));
                 }
 
-                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
+                // Если левой части в таблице нет
                 if (!grammaTable.containsKey(keySymb)) {
                     grammaTable.put(keySymb, new HashSet<>());
                 }
@@ -64,7 +66,9 @@ public class Grammar {
     Set<Token.TokensType> getFirst(Symbol symbol) {
 
         Set<List<Symbol>> setOfRules = grammaTable.get(symbol);
-        Set<Token.TokensType> firsts = new HashSet<>();
+        Set<Token.TokensType> firsts = new TreeSet<>((o1, o2) -> {
+            return o1.toString().compareTo(o2.toString());
+        });
 
         for (List<Symbol> rule : setOfRules) {
 
@@ -92,12 +96,37 @@ public class Grammar {
     List<Symbol> getRule(Symbol a, Token first) {
 
         Set<List<Symbol>> rules = grammaTable.get(a);
+        System.out.printf("Get rule %s -> FIRST(%s)\n", a.getValue(), first.getTokenType());
+
+        if (rules == null)
+            return null;
 
         for (List<Symbol> r : rules) {
-            Set<Token.TokensType> firsts = getFirst(r.get(0));
-            if (firsts.contains(first.getTokenType()))
+            System.out.printf("     %s -> %s\n", a.getValue(), r);
+            System.out.printf("     FIRST(%s) = %s\n", r.get(0), firsts.get(r.get(0)));
+
+            Symbol left = r.get(0);
+
+            if (left.getValue().equals(Token.TokensType.e.toString())) {
+                System.out.printf("     OK(empty rule)\n");
                 return r;
+            }
+
+
+            if (left.isTerminal()) {
+                if (first.getTokenType().toString().equals(left.getValue())) {
+                    System.out.printf("     OK(terminal)\n");
+                    return r;
+                }
+            }
+            else if (firsts.get(left).contains(first.getTokenType())) {
+                System.out.printf("     OK\n");
+                return r;
+            }
+
+            System.out.printf("     NO\n");
         }
+
 
         return null;
     }
@@ -109,33 +138,34 @@ public class Grammar {
 
         while (!st.isEmpty()) {
 
-            Symbol a = st.peek();
+            Symbol a = st.pop();
             Token token = null;
 
             if (tokens.isEmpty())
                 token = new Token(Token.TokensType.e);
             else
-                token = tokens.pop();
+                token = tokens.peek();
 
             System.out.printf("st:%s token:%s\n", a.getValue(), token.getTokenType());
 
-            if (a.getValue() == token.getTokenType().toString()) {
-                // пїЅпїЅпїЅпїЅпїЅпїЅ
-                System.out.printf("пїЅпїЅпїЅпїЅпїЅпїЅ\n");
+            if (a.getValue().equals(token.getTokenType().toString())) {
+                // ВЫБРОС
+                System.out.printf("POP\n");
                 tokens.pop();
                 continue;
             }
 
             List<Symbol> rule = getRule(a, token);
             if (rule == null) {
-                // пїЅпїЅпїЅпїЅпїЅпїЅ
-                System.out.printf("пїЅпїЅпїЅпїЅпїЅпїЅ\n");
+                // ОШИБКА
+                System.out.printf("ERR\n");
                 return;
             }
 
-            Collections.reverse(rule);
-            for (Symbol symbol : rule) {
-                st.push(symbol);
+            for (int i = rule.size() - 1; i >= 0; i--) {
+                Symbol s = rule.get(i);
+                if (!s.getValue().equals(Token.TokensType.e.toString()))
+                    st.push(rule.get(i));
             }
         }
     }
@@ -181,13 +211,13 @@ public class Grammar {
 //            System.out.printf("%s ", s);
 //        }
 
-//        FileInputStream fileStream = new FileInputStream("Files/source.chef");
-//        Analyzer analyzer = new Analyzer(fileStream);
-//
-//        Stack<Token> st = new Stack<>();
-//        st.addAll(analyzer.getListTokens());
-//        Collections.reverse(st);
-//        gr.checkSyntax(st);
+        FileInputStream fileStream = new FileInputStream("Files/source.chef");
+        Analyzer analyzer = new Analyzer(fileStream);
+
+        Stack<Token> st = new Stack<>();
+        st.addAll(analyzer.getListTokens());
+        Collections.reverse(st);
+        gr.checkSyntax(st);
 
     }
 

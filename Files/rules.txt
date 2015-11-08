@@ -1,6 +1,7 @@
 Recipe > RecipeTitle Ingredient_List Method
 
-RecipeTitle > ID
+RecipeTitle > ID SRPT
+
 Ingredient_List > INGR SRPT IngredientLine
 
 IngredientLine > ID CI Measure IngredientLine 

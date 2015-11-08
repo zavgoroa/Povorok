@@ -14,14 +14,14 @@ public class Analyzer {
     ArrayList<Double> listConstans;
     ArrayList<String> listId;
 
-    public Analyzer(String file) throws TokenException, IOException {
+    public Analyzer(FileInputStream input) throws TokenException, IOException {
         mapProcessSeqWord = new HashMap<>();
         listTokens = new ArrayList<>();
         listId = new ArrayList<>();
         listConstans = new ArrayList<>();
         initMapKeyWord();
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(input, "UTF-8"));
         br.skip(1);
 
         StringBuilder wordReaded = new StringBuilder();
@@ -235,7 +235,8 @@ public class Analyzer {
 
     public static void main(String[] args) throws TokenException, IOException {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        Analyzer analyzer = new Analyzer("Files/source.chef");
+        FileInputStream fileStream = new FileInputStream("Files/source.chef");
+        Analyzer analyzer = new Analyzer(fileStream);
         System.out.println();
         analyzer.showResultAnalyzer();
 
