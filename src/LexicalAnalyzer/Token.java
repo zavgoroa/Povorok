@@ -7,7 +7,6 @@ package LexicalAnalyzer;
 public class Token {
 
     private final TokensType type;
-    private String[] keyWord;
     private int index;
 
     public enum TokensType {
@@ -17,22 +16,9 @@ public class Token {
         AND, SET, GETBYINDEX, e;
     }
 
-    public Token(TokensType type, String[] keyWord) {
-        this.type = type;
-        this.keyWord = keyWord.clone();
-        this.index = -1;
-    }
-
-    public Token(TokensType type, int index) {
-        this.type = type;
-        this.index = index;
-        this.keyWord = new String[]{};
-    }
-
     public Token(TokensType type) {
         this.type = type;
         this.index = -1;
-        this.keyWord = new String[]{};
     }
 
     public TokensType getTokenType() {
@@ -42,9 +28,9 @@ public class Token {
     public int getIndex() {
         return this.index;
     }
-
-    public String[] getKeyWordForTokens() {
-        return keyWord;
+    
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     static public boolean isTokenType(String str) {

@@ -38,20 +38,20 @@ public class Grammar {
                 if (!scan.hasNext())
                     continue;
 
-                // Левая часть правила вывода
+                // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 Symbol keySymb = new Symbol(scan.next());
 
-                // Дальше должна быть стрелочка
+                // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 String arrow = scan.next();
                 assert(arrow == ">");
 
-                // Записываем правую часть вывода в виде списка символов
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 List<Symbol> ruleList = new LinkedList<>();
                 while (scan.hasNext()) {
                     ruleList.add(new Symbol(scan.next()));
                 }
 
-                // Если левой части в таблице нет
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
                 if (!grammaTable.containsKey(keySymb)) {
                     grammaTable.put(keySymb, new HashSet<>());
                 }
@@ -120,16 +120,16 @@ public class Grammar {
             System.out.printf("st:%s token:%s\n", a.getValue(), token.getTokenType());
 
             if (a.getValue() == token.getTokenType().toString()) {
-                // ВЫБРОС
-                System.out.printf("ВЫБРОС\n");
+                // пїЅпїЅпїЅпїЅпїЅпїЅ
+                System.out.printf("пїЅпїЅпїЅпїЅпїЅпїЅ\n");
                 tokens.pop();
                 continue;
             }
 
             List<Symbol> rule = getRule(a, token);
             if (rule == null) {
-                // ОШИБКА
-                System.out.printf("ОШИБКА\n");
+                // пїЅпїЅпїЅпїЅпїЅпїЅ
+                System.out.printf("пїЅпїЅпїЅпїЅпїЅпїЅ\n");
                 return;
             }
 
@@ -181,13 +181,13 @@ public class Grammar {
 //            System.out.printf("%s ", s);
 //        }
 
-        FileInputStream fileStream = new FileInputStream("Files/source.chef");
-        Analyzer analyzer = new Analyzer(fileStream);
-
-        Stack<Token> st = new Stack<>();
-        st.addAll(analyzer.getListTokens());
-        Collections.reverse(st);
-        gr.checkSyntax(st);
+//        FileInputStream fileStream = new FileInputStream("Files/source.chef");
+//        Analyzer analyzer = new Analyzer(fileStream);
+//
+//        Stack<Token> st = new Stack<>();
+//        st.addAll(analyzer.getListTokens());
+//        Collections.reverse(st);
+//        gr.checkSyntax(st);
 
     }
 

@@ -1,5 +1,7 @@
 package LexicalAnalyzer;
 
+import java.util.Scanner;
+
 /**
  * Created by kodoo on 31.10.2015.
  */
@@ -13,22 +15,23 @@ class ProcessorSequenceWord {
         this.tokenType = tokenType;
     }
 
+    public String getWordSequence() {
+        String str = "";
+        for (String word: sequenceWord) {
+            str += word + " ";
+        }
+        return str;
+    }
     public int sizeSequenceWord() {
         return sequenceWord.length;
     }
+    
+    public Token.TokensType getTokenType() {
+        return this.tokenType;
+    }
 
-    public Token processSequence(String[] words, Integer startIndex) throws TokenException {
-        int index;
-        for (index = 0; index < sequenceWord.length && index < words.length; ++index) {
-            if (!sequenceWord[index].equals(words[startIndex])) {
-                throw new TokenException("Incorrect languages contruction");
-            }
-            startIndex++;
-        }
-        if (index != sequenceWord.length) {
-            throw new TokenException("Incorrect languages contruction");
-        }
-        return new Token(this.tokenType, this.sequenceWord);
+    public boolean checkWord(String word, int index) {
+        return sequenceWord[index].equals(word);
     }
 }
 

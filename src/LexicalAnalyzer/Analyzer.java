@@ -2,6 +2,7 @@ package LexicalAnalyzer;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by kodoo on 09.10.2015.
@@ -13,81 +14,150 @@ public class Analyzer {
     ArrayList<Double> listConstans;
     ArrayList<String> listId;
 
-    public Analyzer(FileInputStream fileStream) throws TokenException, IOException {
+    public Analyzer(String file) throws TokenException, IOException {
         mapProcessSeqWord = new HashMap<>();
         listTokens = new ArrayList<>();
         listId = new ArrayList<>();
         listConstans = new ArrayList<>();
         initMapKeyWord();
 
-        BufferedInputStream inputStream = new BufferedInputStream(fileStream);
-        Scanner scanner = new Scanner(inputStream, "UTF-8");
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+        br.skip(1);
 
-        String saveReadWord = "";
-        while (scanner.hasNext()) {
-            String row = scanner.next();
-            row = row.trim().toLowerCase();
-            String[] words = row.split("[ \\t]+");
+        StringBuilder wordReaded = new StringBuilder();
+        int countLine = 0;
+        int posInLine = 0;
+        int numWordInKeyPhrase = 0;
+        boolean isKeyPhrase = false;
+        boolean statusLexicalAnalize = true;
+        ProcessorSequenceWord keyWordProcess = null;
 
-            for (int i = 0; i < words.length; ++i) {
+        int ch = 0;
+        while ((ch = br.read()) != -1) {
+            char symbol = (char) ch;
 
-                if (isNumeric(words[i])) {
-                    saveReadWord = addToken(saveReadWord.trim());
-                    addConstants(words[i]);
-                    continue;
-                }
+            if (symbol == '\r') {
+                posInLine++;
+                continue;
+            }
 
-                ProcessorSequenceWord keyWordProcess = mapProcessSeqWord.get(words[i]);
-                if (keyWordProcess == null) {
-                    int index = listId.indexOf(words[i].trim());
-                    if (index < 0) {
-                        saveReadWord += words[i].trim() + " ";
+            if (symbol != '.' && symbol != ' ' && symbol != '\n' && symbol != '\t') {
+                wordReaded.append(symbol);
+                posInLine++;
+            } else {
+                String word = wordReaded.toString().trim().toLowerCase();
+                if (!word.isEmpty())
+                    System.out.println(word);
+
+                if (!word.isEmpty()) {
+
+                    if (isNumeric(word)) {
+                        addConstants(word);
+                        wordReaded.delete(0, wordReaded.length());
+                        continue;
+                    }
+
+
+                    if (!isTrueIdentificator(word)) {
+                        System.out.println("Error in line " + countLine +
+                                " , position " + (posInLine - word.length())
+                                + ", word= \"" + word + "\"");
+                        wordReaded.delete(0, wordReaded.length());
+                        statusLexicalAnalize = false;
+                        isKeyPhrase = false;
+                        //continue;
+
                     } else {
-                        saveReadWord = addToken(saveReadWord.trim());
-                        addToken(words[i].trim());
+
+                        if (!isKeyPhrase) {
+                            keyWordProcess = mapProcessSeqWord.get(word);
+                            if (keyWordProcess == null) {
+                                checkId(word);
+                            } else {
+                                numWordInKeyPhrase = keyWordProcess.sizeSequenceWord() - 1;
+
+                                if (numWordInKeyPhrase == 0) {
+                                    addToken(keyWordProcess.getTokenType(), -1);
+                                    isKeyPhrase = false;
+                                } else {
+                                    isKeyPhrase = true;
+                                }
+                            }
+                        } else {
+                            if (keyWordProcess.checkWord(word, keyWordProcess.sizeSequenceWord() - numWordInKeyPhrase)) {
+                                numWordInKeyPhrase--;
+                                if (numWordInKeyPhrase <= 0) {
+                                    isKeyPhrase = false;
+                                    addToken(keyWordProcess.getTokenType(), -1);
+                                }
+                            } else {
+                                System.out.println("Token error in line " +
+                                        countLine + " , position "
+                                        + (posInLine - word.length()) + ", word="
+                                        + word + ", expected phrase="
+                                        + keyWordProcess.getWordSequence());
+                                statusLexicalAnalize = false;
+                                isKeyPhrase = false;
+                            }
+                        }
                     }
                 } else {
-                    Token token = keyWordProcess.processSequence(words, i);
-                    i += keyWordProcess.sizeSequenceWord() - 1;
-                    listTokens.add(token);
+                    if (isKeyPhrase && symbol != '\t' && symbol != '\n' && symbol != ' ') {
+                        System.out.println("Token error in line " +
+                                countLine + " , position "
+                                + (posInLine - word.length()) + ", word ="
+                                + word + ", expected phrase="
+                                + keyWordProcess.getWordSequence());
+                        statusLexicalAnalize = false;
+                        isKeyPhrase = false;
+                    }
+                }
+
+                wordReaded.delete(0, wordReaded.length());
+                posInLine++;
+
+                if (symbol == '.') {
+                    addToken(Token.TokensType.SRPT, -1);
+                }
+
+                if (symbol == '\n') {
+                    countLine++;
+                    posInLine = 0;
                 }
             }
-            saveReadWord = addToken(saveReadWord.trim());
-            listTokens.add(new Token(Token.TokensType.SRPT, -1));
         }
     }
 
-    private String addToken(String id) {
+    private void checkId(String id) {
         if (!id.isEmpty()) {
             int index = listId.indexOf(id);
             if (index < 0) {
                 listId.add(id);
-                listTokens.add(new Token(Token.TokensType.ID, listId.size() - 1));
+                addToken(Token.TokensType.ID, listId.size() - 1);
             } else {
-                listTokens.add(new Token(Token.TokensType.ID, index));
+                addToken(Token.TokensType.ID, index);
             }
         }
-        return "";
+    }
+
+    private boolean isTrueIdentificator(String word) {
+        return word.matches("^[а-я][а-я0-9]*");
+    }
+
+    private void addToken(Token.TokensType type, int index) {
+        Token token = new Token(type);
+        token.setIndex(index);
+        listTokens.add(token);
     }
 
     private void addConstants(String word) {
         Double value = Double.parseDouble(word);
         listConstans.add(value);
-        listTokens.add(new Token(Token.TokensType.CI, listConstans.size() - 1));
+        addToken(Token.TokensType.CI, listConstans.size() - 1);
     }
 
     private boolean isNumeric(String word) {
         return word.matches("-?\\d+(\\.\\d+)?");
-    }
-
-    private boolean haveDotOnEnd(StringBuilder word) {
-        int indexDot = word.length() - 1;
-        if (word.charAt(indexDot) == '.') {
-            word.deleteCharAt(indexDot);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public ArrayList<String> getListId() {
@@ -140,42 +210,41 @@ public class Analyzer {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream("Files/f"), "Cp1251"))) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        Scanner scan = new Scanner(line);
+            String line;
+            while ((line = br.readLine()) != null) {
+                Scanner scan = new Scanner(line);
 
-                        String tokenType = scan.next();
-                        LinkedList<String> tokenValue = new LinkedList<>();
+                String tokenType = scan.next();
+                LinkedList<String> tokenValue = new LinkedList<>();
 
-                        while (scan.hasNext()) {
-                            String word = scan.next();
-                            tokenValue.add(word.toLowerCase());
-                        }
-
-                        System.out.printf("%s : %s\n", tokenType, tokenValue);
-
-                        mapProcessSeqWord.put(tokenValue.get(0), new ProcessorSequenceWord(
-                                tokenValue.toArray(new String[0]),
-                                Token.TokensType.valueOf(tokenType)));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                while (scan.hasNext()) {
+                    String word = scan.next();
+                    tokenValue.add(word.toLowerCase());
                 }
+
+                System.out.printf("%s : %s\n", tokenType, tokenValue);
+
+                mapProcessSeqWord.put(tokenValue.get(0), new ProcessorSequenceWord(
+                        tokenValue.toArray(new String[0]),
+                        Token.TokensType.valueOf(tokenType)));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) throws TokenException, IOException {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        FileInputStream fileStream = new FileInputStream("Files/source.chef");
-        Analyzer analyzer = new Analyzer(fileStream);
+        Analyzer analyzer = new Analyzer("Files/source.chef");
         System.out.println();
         analyzer.showResultAnalyzer();
 
-        Stack<Token> st = new Stack<>();
-        st.addAll(analyzer.getListTokens());
-        Collections.reverse(st);
-
-        while (!st.isEmpty()) {
-            System.out.println(st.pop().getTokenType());
-        }
+//        Stack<Token> st = new Stack<>();
+//        st.addAll(analyzer.getListTokens());
+//        Collections.reverse(st);
+//
+//        while (!st.isEmpty()) {
+//            System.out.println(st.pop().getTokenType());
+//        }
     }
 }
