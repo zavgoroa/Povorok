@@ -17,6 +17,8 @@ public class Grammar {
     private Map<Symbol, Set<List<Symbol>>> grammaTable;
     private Map<Symbol, Set<Token.TokensType>> firsts;
 
+    private SyntaxTree tree;
+
     public Grammar() {
         grammaTable = new TreeMap<>((o1, o2) -> {
             return o1.getValue().compareTo(o2.getValue());
@@ -25,6 +27,8 @@ public class Grammar {
         firsts = new TreeMap<>((o1, o2) -> {
             return o1.getValue().compareTo(o2.getValue());
         });
+
+        tree = new SyntaxTree(startSymbol);
     }
 
     public void loadFromFile(String fileIn, String charSet) throws IOException {
@@ -96,42 +100,42 @@ public class Grammar {
     List<Symbol> getRule(Symbol a, Token first) {
 
         Set<List<Symbol>> rules = grammaTable.get(a);
-        System.out.printf("Get rule %s -> FIRST(%s)\n", a.getValue(), first.getTokenType());
+        //System.out.printf("Get rule %s -> FIRST(%s)\n", a.getValue(), first.getTokenType());
 
         if (rules == null)
             return null;
 
         for (List<Symbol> r : rules) {
-            System.out.printf("     %s -> %s\n", a.getValue(), r);
-            System.out.printf("     FIRST(%s) = %s\n", r.get(0), firsts.get(r.get(0)));
+            //System.out.printf("     %s -> %s\n", a.getValue(), r);
+            //System.out.printf("     FIRST(%s) = %s\n", r.get(0), firsts.get(r.get(0)));
 
             Symbol left = r.get(0);
 
             if (left.getValue().equals(Token.TokensType.e.toString())) {
-                System.out.printf("     OK(empty rule)\n");
+                //System.out.printf("     OK(empty rule)\n");
                 return r;
             }
 
 
             if (left.isTerminal()) {
                 if (first.getTokenType().toString().equals(left.getValue())) {
-                    System.out.printf("     OK(terminal)\n");
+                    //System.out.printf("     OK(terminal)\n");
                     return r;
                 }
             }
             else if (firsts.get(left).contains(first.getTokenType())) {
-                System.out.printf("     OK\n");
+                //System.out.printf("     OK\n");
                 return r;
             }
 
-            System.out.printf("     NO\n");
+            //System.out.printf("     NO\n");
         }
 
 
         return null;
     }
 
-    public void checkSyntax(Stack<Token> tokens) {
+    public void checkSyntax(Stack<Token> tokens) throws SyntaxException {
 
         Stack<Symbol> st = new Stack<>();
         st.push(startSymbol);
@@ -146,21 +150,23 @@ public class Grammar {
             else
                 token = tokens.peek();
 
-            System.out.printf("st:%s token:%s\n", a.getValue(), token.getTokenType());
+            //System.out.printf("st:%s token:%s\n", a.getValue(), token.getTokenType());
 
             if (a.getValue().equals(token.getTokenType().toString())) {
                 // бшапня
-                System.out.printf("POP\n");
+                //System.out.printf("POP\n");
                 tokens.pop();
+                tree.next();
                 continue;
             }
 
             List<Symbol> rule = getRule(a, token);
             if (rule == null) {
                 // ньхайю
-                System.out.printf("ERR\n");
-                return;
+                throw new SyntaxException(a, token);
             }
+
+            tree.addChildren(rule);
 
             for (int i = rule.size() - 1; i >= 0; i--) {
                 Symbol s = rule.get(i);
@@ -196,6 +202,10 @@ public class Grammar {
         return sb.toString();
     }
 
+    public String formatTree() {
+        return tree.toString();
+    }
+
     public static void main(String[] args) throws IOException, TokenException {
 
         Grammar gr = new Grammar();
@@ -212,12 +222,40 @@ public class Grammar {
 //        }
 
         FileInputStream fileStream = new FileInputStream("Files/source.chef");
-        Analyzer analyzer = new Analyzer(fileStream);
+        Analyzer analyzer = new Analyzer();
+        if (!analyzer.parcingText(fileStream)) return;
 
         Stack<Token> st = new Stack<>();
         st.addAll(analyzer.getListTokens());
         Collections.reverse(st);
-        gr.checkSyntax(st);
+        try {
+            gr.checkSyntax(st);
+        } catch (SyntaxException e) {
+
+            StringBuilder str = new StringBuilder();
+            str.append("Syntax Error! Imposable to resolve [");
+            str.append(e.a);
+            str.append("] to [");
+
+            if (e.t.getTokenType() == Token.TokensType.ID) {
+                str.append(analyzer.getListId().get(e.t.getIndex()));
+            }
+            else if (e.t.getTokenType() == Token.TokensType.CI) {
+                str.append(analyzer.getListConstanst().get(e.t.getIndex()));
+            }
+            else {
+                str.append(e.t.getTokenType().toString());
+            }
+
+            str.append("]!");
+
+            System.out.println(str);
+            return;
+        }
+
+
+
+        System.out.println(gr.formatTree());
 
     }
 

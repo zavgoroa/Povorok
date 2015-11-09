@@ -14,13 +14,15 @@ public class Analyzer {
     ArrayList<Double> listConstans;
     ArrayList<String> listId;
 
-    public Analyzer(FileInputStream input) throws TokenException, IOException {
+    public Analyzer() throws TokenException, IOException {
         mapProcessSeqWord = new HashMap<>();
         listTokens = new ArrayList<>();
         listId = new ArrayList<>();
         listConstans = new ArrayList<>();
         initMapKeyWord();
+    }
 
+    public boolean parcingText(FileInputStream input) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(input, "UTF-8"));
         br.skip(1);
 
@@ -126,6 +128,7 @@ public class Analyzer {
                 }
             }
         }
+        return statusLexicalAnalize;
     }
 
     private void checkId(String id) {
@@ -174,7 +177,7 @@ public class Analyzer {
 
     public void showResultAnalyzer() {
         for (int i = 0; i < listId.size(); ++i) {
-            System.out.println("ID" + i + "    " + listId.get(i));
+            //System.out.println("ID" + i + "    " + listId.get(i));
         }
         System.out.println();
 
@@ -236,7 +239,8 @@ public class Analyzer {
     public static void main(String[] args) throws TokenException, IOException {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         FileInputStream fileStream = new FileInputStream("Files/source.chef");
-        Analyzer analyzer = new Analyzer(fileStream);
+        Analyzer analyzer = new Analyzer();
+        if (!analyzer.parcingText(fileStream)) return;
         System.out.println();
         analyzer.showResultAnalyzer();
 
