@@ -177,7 +177,7 @@ public class Analyzer {
 
     public void showResultAnalyzer() {
         for (int i = 0; i < listId.size(); ++i) {
-            //System.out.println("ID" + i + "    " + listId.get(i));
+            System.out.println("ID" + i + "    " + listId.get(i));
         }
         System.out.println();
 
