@@ -4,7 +4,7 @@ RecipeTitle > ID SRPT
 
 Ingredient_List > INGR SRPT IngredientLine
 
-IngredientLine > ID CI Measure IngredientLine 
+IngredientLine > ID CI Measure SRPT IngredientLine
 IngredientLine > e
 
 Measure > M_G
@@ -15,7 +15,7 @@ Measure > M_L
 
 Method > METHOD SRPT Statements
 
-Statements > Statement SRPT Statements
+Statements > Statement Statements
 Statements > e
 
 Statement > ID IdOperation
@@ -31,8 +31,8 @@ Operation > SUB
 Operation > MUL
 Operation > DIV
 
-Statement > STDIN ID
-Statement > STDOUT ID
+Statement > STDIN ID SRPT
+Statement > STDOUT ID SRPT
 
 Statement > LCAST ID
 
@@ -48,13 +48,13 @@ Condition > LES
 
 Statement > WHILE ID LoopBody EndLoop 
 
-LoopBody > ID SRPT Statements ID
-LoopBody > SRPT Statements ID
+LoopBody > ID SRPT Statement ID
+LoopBody > SRPT Statement ID
 
-EndLoop > ID UNTIL
-EndLoop > UNTIL
+EndLoop > ID UNTIL SRPT
+EndLoop > UNTIL SRPT
 
-Statement > BREAK 
+Statement > BREAK SRPT
 
 
 
