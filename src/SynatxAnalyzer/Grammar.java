@@ -224,7 +224,7 @@ public class Grammar {
         FileInputStream fileStream = new FileInputStream("Files/source.chef");
         Analyzer analyzer = new Analyzer();
         if (!analyzer.parcingText(fileStream)) return;
-
+		analyzer.showResultAnalyzer();
         Stack<Token> st = new Stack<>();
         st.addAll(analyzer.getListTokens());
         Collections.reverse(st);
