@@ -19,7 +19,12 @@ public class Grammar {
 
     private SyntaxTree tree;
 
-    public Grammar() {
+    Analyzer anal;
+
+    public Grammar(Analyzer anal) {
+
+        this.anal = anal;
+
         grammaTable = new TreeMap<>((o1, o2) -> {
             return o1.getValue().compareTo(o2.getValue());
         });
@@ -63,6 +68,7 @@ public class Grammar {
                 }
 
                 grammaTable.get(keySymb).add(ruleList);
+                System.out.printf("%s -> %s\n", keySymb, ruleList);
             }
         }
     }
@@ -100,35 +106,35 @@ public class Grammar {
     List<Symbol> getRule(Symbol a, Token first) {
 
         Set<List<Symbol>> rules = grammaTable.get(a);
-        //System.out.printf("Get rule %s -> FIRST(%s)\n", a.getValue(), first.getTokenType());
+        System.out.printf("Get rule %s -> FIRST(%s)\n", a.getValue(), first.getTokenType());
 
         if (rules == null)
             return null;
 
         for (List<Symbol> r : rules) {
-            //System.out.printf("     %s -> %s\n", a.getValue(), r);
-            //System.out.printf("     FIRST(%s) = %s\n", r.get(0), firsts.get(r.get(0)));
+            System.out.printf("     %s -> %s\n", a.getValue(), r);
+            System.out.printf("     FIRST(%s) = %s\n", r.get(0), firsts.get(r.get(0)));
 
             Symbol left = r.get(0);
 
             if (left.getValue().equals(Token.TokensType.e.toString())) {
-                //System.out.printf("     OK(empty rule)\n");
+                System.out.printf("     OK(empty rule)\n");
                 return r;
             }
 
 
             if (left.isTerminal()) {
                 if (first.getTokenType().toString().equals(left.getValue())) {
-                    //System.out.printf("     OK(terminal)\n");
+                    System.out.printf("     OK(terminal)\n");
                     return r;
                 }
             }
             else if (firsts.get(left).contains(first.getTokenType())) {
-                //System.out.printf("     OK\n");
+                System.out.printf("     OK\n");
                 return r;
             }
 
-            //System.out.printf("     NO\n");
+            System.out.printf("     NO\n");
         }
 
 
@@ -150,11 +156,11 @@ public class Grammar {
             else
                 token = tokens.peek();
 
-            //System.out.printf("st:%s token:%s\n", a.getValue(), token.getTokenType());
+            System.out.printf("st:%s token:%s(%s)\n", a.getValue(), token.getTokenType(), token.getIndex());
 
             if (a.getValue().equals(token.getTokenType().toString())) {
                 // бшапня
-                //System.out.printf("POP\n");
+                System.out.printf("POP\n");
                 tokens.pop();
                 tree.next();
                 continue;
@@ -208,7 +214,24 @@ public class Grammar {
 
     public static void main(String[] args) throws IOException, TokenException {
 
-        Grammar gr = new Grammar();
+
+
+//        for (Symbol s : gr.getRule(startSymbol, new Token(Token.TokensType.ID))) {
+//            System.out.printf("%s ", s);
+//        }
+
+        FileInputStream fileStream = new FileInputStream("Files/source.chef");
+        Analyzer analyzer = new Analyzer();
+
+        if (!analyzer.parcingText(fileStream)) return;
+
+		analyzer.showResultAnalyzer();
+        Stack<Token> st = new Stack<>();
+        st.addAll(analyzer.getListTokens());
+        Collections.reverse(st);
+
+
+        Grammar gr = new Grammar(analyzer);
         try {
             gr.loadFromFile("Files/rules.txt", "Cp1251");
         } catch (IOException e) {
@@ -217,17 +240,6 @@ public class Grammar {
         gr.initFirsts();
         System.out.print(gr);
 
-//        for (Symbol s : gr.getRule(startSymbol, new Token(Token.TokensType.ID))) {
-//            System.out.printf("%s ", s);
-//        }
-
-        FileInputStream fileStream = new FileInputStream("Files/source.chef");
-        Analyzer analyzer = new Analyzer();
-        if (!analyzer.parcingText(fileStream)) return;
-		analyzer.showResultAnalyzer();
-        Stack<Token> st = new Stack<>();
-        st.addAll(analyzer.getListTokens());
-        Collections.reverse(st);
         try {
             gr.checkSyntax(st);
         } catch (SyntaxException e) {

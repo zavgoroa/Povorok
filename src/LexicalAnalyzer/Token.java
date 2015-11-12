@@ -13,7 +13,7 @@ public class Token {
         ID, CI, SRPT, MARK, INGR, METHOD, M_G, M_KG, M_CHL, M_SHT, M_ML, M_L,
         M_STL, STDIN, STDOUT, STDOUTSTACK, PUSH, POP, ADD, SUB, MUL, DIV, LCAST,
         STACKCAST, CLR, WHILE, UNTIL, BREAK, IF, ELSE, NEQ, EQ, GR, LES, ENDIF,
-        AND, SET, GETBYINDEX, e;
+        AND, SET, GETBYINDEX, KAK, e;
     }
 
     public Token(TokensType type) {
