@@ -18,6 +18,10 @@ public class SyntaxTree {
         pointer = new DefaultMutableTreeNode(root);
     }
 
+    public DefaultMutableTreeNode getRoot() {
+        return (DefaultMutableTreeNode) pointer.getRoot();
+    }
+
     void addChildren(List<Symbol> children) {
 
         //System.out.printf("add children to %s\n", pointer);

@@ -17,6 +17,10 @@ public class Grammar {
     private Map<Symbol, Set<List<Symbol>>> grammaTable;
     private Map<Symbol, Set<Token.TokensType>> firsts;
 
+    public SyntaxTree getTree() {
+        return tree;
+    }
+
     private SyntaxTree tree;
 
     Analyzer anal;
@@ -95,7 +99,7 @@ public class Grammar {
         return firsts;
     }
 
-    private void initFirsts() {
+    public void initFirsts() {
 
         for (Symbol nonTerm : grammaTable.keySet()) {
             firsts.put(nonTerm, getFirst(nonTerm));
