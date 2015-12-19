@@ -53,6 +53,9 @@ public class Grammar {
                 if (!scan.hasNext())
                     continue;
 
+                if (line.charAt(0) == ':')
+                    continue;
+
                 // Левая часть правила вывода
                 Symbol keySymb = new Symbol(scan.next());
 

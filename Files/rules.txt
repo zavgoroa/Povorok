@@ -1,52 +1,86 @@
 Recipe > RecipeTitle Ingredient_List Method
-
+:_ _ _ .
 RecipeTitle > ID SRPT
-
+:_ _ _ .
 Ingredient_List > INGR SRPT IngredientLine
-
+:_ _ _ .
 IngredientLine > ID CI Measure IngredientLine
-IngredientLine > e
+:_ _ _ .
 
 Measure > M_G
+:_ _ _ .
 Measure > M_KG
-Measure > M_SHT
+:_ _ _ .
 Measure > M_ML
+:_ _ _ .
 Measure > M_L
+:_ _ _ .
+Measure > M_SHT
+:_ _ _ .
+
+IngredientLine > e
+:_ _ _ .
 
 Method > METHOD SRPT Statements
+:_ _ _ .
 
 Statements > Statement SRPT Statements
+:_ _ _ .
 Statements > e
+:_ _ _ .
 
 Statement > ID SET Arithmetic
+:= c0 c2 .
 
-Arithmetic > GETBYINDEX ID KAK ID
+Arithmetic > GETBYINDEX ID KAK Arithmetic
+:INDEX c1 c3 .
 Arithmetic > ID
-Arithmetic > Operation Arithmetic AND Arithmetic
-
-Operation > ADD
-Operation > SUB
-Operation > MUL
-Operation > DIV
+:1st c0 _ .
+Arithmetic > ADD Arithmetic AND Arithmetic
+:ADD c1 c3 .
+Arithmetic > SUB Arithmetic AND Arithmetic
+:SUB c1 c3 .
+Arithmetic > MUL Arithmetic AND Arithmetic
+:MUL c1 c3 .
+Arithmetic > DIV Arithmetic AND Arithmetic
+:DIV c1 c3 .
 
 Statement > STDIN ID
+:STDIN c1 _ .
 Statement > STDOUT ID
+:STDOUT c1 _ .
 
 Statement > LCAST ID
+:_ _ _ .
 
-Statement > IF Condition ID AND ID SRPT Statements ElseStatement
+Statement > IF Condition SRPT Statements ElseStatement
+:bf l1 c1
+:_ c3 _
+:defl l1 _
+:_ c4 _ .
+
 
 ElseStatement > ELSE Statements ENDIF
+:_ c1 _ .
 ElseStatement > ENDIF
+:_ _ _ .
 
-Condition > EQ
-Condition > NEQ
-Condition > GR
-Condition > LES
+Condition > EQ ID AND ID
+:eq c1 c3 .
+Condition > NEQ ID AND ID
+:neq c1 c3 .
+Condition > GR ID AND ID
+:gr c1 c3 .
+Condition > LES ID AND ID
+:les c1 c3 .
 
-Statement > WHILE ID LoopBody UNTIL
+Statement > WHILE ID ID SRPT Statements UNTIL
+:defl l1 _
+:bzl l2 c1
+:_ c2 _
+:bp l1 c1
+:defl l2 _ .
 
-LoopBody > ID SRPT Statements
-LoopBody > SRPT Statements
 
 Statement > BREAK
+:jmp out .
