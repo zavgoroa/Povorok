@@ -156,7 +156,7 @@ public class IntermediateCodeGenerator {
      * @param curNode
      * @return last triada result variable name
      */
-    String processNode(DefaultMutableTreeNode curNode) {
+    String processNode(DefaultMutableTreeNode curNode, String outLabel) {
 
         StringBuilder outBuffer = new StringBuilder();
         LabelGenerator lGen = new LabelGenerator(generateGeneratorId());
@@ -177,10 +177,15 @@ public class IntermediateCodeGenerator {
         for (Triada tr : ruleTriadas) {
             outBuffer.append(tr.operation + " ");
 
-            String operand1 = processOperand(tr.operand1, curNode.children(), lGen);
-            String operand2 = processOperand(tr.operand2, curNode.children(), lGen);
-
+            String operand1 = processOperand(tr.operand1, curNode.children(), lGen, outLabel);
             outBuffer.append(operand1 + " ");
+
+            String operand2;
+            if (tr.operation.equals("_") && !tr.operand1.equals("_"))
+                operand2 = processOperand(tr.operand2, curNode.children(), lGen, operand1);
+            else
+                operand2 = processOperand(tr.operand2, curNode.children(), lGen, outLabel);
+
             outBuffer.append(operand2 + " ");
 
             if (tr.returnes) {
@@ -192,13 +197,14 @@ public class IntermediateCodeGenerator {
 
             if (!tr.operation.equals("_"))
                 System.out.println(outBuffer);
+
             outBuffer.setLength(0);
         }
 
         return returnVar;
     }
 
-    String processOperand(String operand, Enumeration<DefaultMutableTreeNode> children, LabelGenerator lGen) {
+    String processOperand(String operand, Enumeration<DefaultMutableTreeNode> children, LabelGenerator lGen, String outLabel) {
         if (operand.charAt(0) == 'c') {
             //Взять ребёнка
             int childNum = Integer.parseInt(operand.substring(1));
@@ -222,13 +228,16 @@ public class IntermediateCodeGenerator {
                 else
                     return childNode.getType();
             else {
-                return processNode(child);
+                return processNode(child, outLabel);
             }
         }
         else if (operand.charAt(0) == 'l') {
 
             int labelNum = Integer.parseInt(operand.substring(1));
             return lGen.getLabel(labelNum);
+        }
+        else if (operand.charAt(0) == 'o') { //out
+            return outLabel;
         }
 
         return operand;
@@ -286,7 +295,7 @@ public class IntermediateCodeGenerator {
         System.out.println(gr.formatTree());
 
         IntermediateCodeGenerator generator = new IntermediateCodeGenerator("Files/rules.txt", "Cp1251");
-        generator.processNode(gr.getTree().getRoot());
+        generator.processNode(gr.getTree().getRoot(), "L_ENDPGM");
     }
 
     class LabelGenerator {

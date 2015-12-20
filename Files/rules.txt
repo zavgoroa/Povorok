@@ -56,9 +56,10 @@ Statement > LCAST ID
 
 Statement > IF Condition SRPT Statements ElseStatement
 :bf l1 c1
-:_ c3 _
+:_ l2 c3
 :defl l1 _
-:_ c4 _ .
+:_ l2 c4
+:defl l2 _ .
 
 
 ElseStatement > ELSE Statements ENDIF
@@ -78,7 +79,7 @@ Condition > LES ID AND ID
 Statement > WHILE ID ID SRPT Statements UNTIL
 :defl c1 _
 :bzl l2 c2
-:_ c4 _
+:_ l2 c4
 :bp c1 c2
 :defl l2 _ .
 
