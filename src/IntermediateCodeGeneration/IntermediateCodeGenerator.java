@@ -159,7 +159,7 @@ public class IntermediateCodeGenerator {
      * @param curNode
      * @return last triada result variable name
      */
-    String processNode(DefaultMutableTreeNode curNode, String outLabel) {
+    public String processNode(DefaultMutableTreeNode curNode, String outLabel) {
 
         StringBuilder outBuffer = new StringBuilder();
         LabelGenerator lGen = new LabelGenerator(generateGeneratorId());

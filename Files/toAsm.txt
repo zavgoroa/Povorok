@@ -1,33 +1,37 @@
->=/2
-	$1 dw $2
+>=
+	mov $1, $2
 	.
->1st/1
+>1st
+	mov $3, $1
+	.
+>INDEX
+	.
 >ADD
 	mov ax, $1
 	add ax, $2
 	mov $3, ax
 	.
->SUB/2
+>SUB
 	mov ax, $1
 	sub ax, $2
 	mov $3, ax
 	.
->MUL/2
+>MUL
 	mov ax, $1
 	sub $2
     ;при умножении байтов результат помещается в ax;
     ;при умножении слов результат помещается в пару dx:ax;
-    ;при умножении двойных слов результат помещается в пару edx:eax.
+    ;при умножении двойных слов результат помещается в пару edx:eax
 	mov $3, ax
 	.
->DIV/2
+>DIV
 	mov ax, $1
 	div $2
 	mov $3, ax
 	.
->STDIN/1
+>STDIN
 	.
->STDOUT/1
+>STDOUT
 	.
 >bf
 	cmp $2 1
@@ -84,7 +88,7 @@
 	mov ax $2
 	cmp ax, 0
 	jne l2
-	jmp $2
+	jmp $1
 	l2:
 	.
 >jmp
