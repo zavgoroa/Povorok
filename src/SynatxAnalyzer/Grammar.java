@@ -169,6 +169,7 @@ public class Grammar {
                 // бшапня
                 Symbol curNode = (Symbol) tree.pointer.getUserObject();
                 if (token.getTokenType() == Token.TokensType.ID)
+                    //curNode.setValue("" + token.getIndex());
                     curNode.setValue(anal.getListId().get(token.getIndex()));
                 else if (token.getTokenType() == Token.TokensType.CI)
                     curNode.setValue("" + anal.getListConstanst().get(token.getIndex()));
