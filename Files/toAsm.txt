@@ -1,4 +1,6 @@
 >=/2
+	$1 dw $2
+	.
 >1st/1
 >ADD
 	mov ax, $1
@@ -6,10 +8,22 @@
 	mov $3, ax
 	.
 >SUB/2
+	mov ax, $1
+	sub ax, $2
+	mov $3, ax
 	.
 >MUL/2
+	mov ax, $1
+	sub $2
+    ;при умножении байтов результат помещается в ax;
+    ;при умножении слов результат помещается в пару dx:ax;
+    ;при умножении двойных слов результат помещается в пару edx:eax.
+	mov $3, ax
 	.
 >DIV/2
+	mov ax, $1
+	div $2
+	mov $3, ax
 	.
 >STDIN/1
 	.
@@ -17,7 +31,7 @@
 	.
 >bf
 	cmp $2 1
-	eq $1
+	je $1
 	.
 >defl
 	$1:
@@ -26,7 +40,7 @@
 	mov ax $1
 	mov bx $2
 	cmp ax, bx
-	eq l1
+	je l1
 	mov %3 0
 	jmp l2:
 	l1:
@@ -34,13 +48,45 @@
 	l2:
 	.
 >neq
+	mov ax $1
+	mov bx $2
+	cmp ax, bx
+	jne l1
+	mov %3 0
+	jmp l2:
+	l1:
+	mov %3 1
+	l2:
 	.
 >gr
+	mov ax $1
+    mov bx $2
+    cmp ax, bx
+    jg l1
+    mov %3 0
+    jmp l2:
+    l1:
+    mov %3 1
+    l2:
 	.
 >les
+	mov ax $1
+	mov bx $2
+	cmp ax, bx
+	jle l1
+	mov %3 0
+	jmp l2:
+	l1:
+	mov %3 1
+	l2:
 	.
->bzl/2 - перейти на 1 если 2 - ноль
+>bzl
+	mov ax $2
+	cmp ax, 0
+	jne l2
+	jmp $2
+	l2:
 	.
 >jmp
-	jmp 1$
+	jmp $1
 	.
