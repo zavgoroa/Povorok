@@ -30,11 +30,11 @@ public class Grammar {
         this.anal = anal;
 
         grammaTable = new TreeMap<>((o1, o2) -> {
-            return o1.getValue().compareTo(o2.getValue());
+            return o1.getType().compareTo(o2.getType());
         });
 
         firsts = new TreeMap<>((o1, o2) -> {
-            return o1.getValue().compareTo(o2.getValue());
+            return o1.getType().compareTo(o2.getType());
         });
 
         tree = new SyntaxTree(startSymbol);
@@ -92,7 +92,7 @@ public class Grammar {
             Symbol leftSymbol = rule.get(0);
 
             if (leftSymbol.isTerminal()) {
-                firsts.add(Token.TokensType.valueOf(leftSymbol.getValue()));
+                firsts.add(Token.TokensType.valueOf(leftSymbol.getType()));
             }
             else {
                 firsts.addAll(getFirst(leftSymbol));
@@ -113,25 +113,25 @@ public class Grammar {
     List<Symbol> getRule(Symbol a, Token first) {
 
         Set<List<Symbol>> rules = grammaTable.get(a);
-        System.out.printf("Get rule %s -> FIRST(%s)\n", a.getValue(), first.getTokenType());
+        System.out.printf("Get rule %s -> FIRST(%s)\n", a.getType(), first.getTokenType());
 
         if (rules == null)
             return null;
 
         for (List<Symbol> r : rules) {
-            System.out.printf("     %s -> %s\n", a.getValue(), r);
+            System.out.printf("     %s -> %s\n", a.getType(), r);
             System.out.printf("     FIRST(%s) = %s\n", r.get(0), firsts.get(r.get(0)));
 
             Symbol left = r.get(0);
 
-            if (left.getValue().equals(Token.TokensType.e.toString())) {
+            if (left.getType().equals(Token.TokensType.e.toString())) {
                 System.out.printf("     OK(empty rule)\n");
                 return r;
             }
 
 
             if (left.isTerminal()) {
-                if (first.getTokenType().toString().equals(left.getValue())) {
+                if (first.getTokenType().toString().equals(left.getType())) {
                     System.out.printf("     OK(terminal)\n");
                     return r;
                 }
@@ -163,10 +163,17 @@ public class Grammar {
             else
                 token = tokens.peek();
 
-            System.out.printf("st:%s token:%s(%s)\n", a.getValue(), token.getTokenType(), token.getIndex());
+            System.out.printf("st:%s token:%s(%s)\n", a.getType(), token.getTokenType(), token.getIndex());
 
-            if (a.getValue().equals(token.getTokenType().toString())) {
+            if (a.getType().equals(token.getTokenType().toString())) {
                 // бшапня
+                Symbol curNode = (Symbol) tree.pointer.getUserObject();
+                if (token.getTokenType() == Token.TokensType.ID)
+                    curNode.setValue(anal.getListId().get(token.getIndex()));
+                else if (token.getTokenType() == Token.TokensType.CI)
+                    curNode.setValue("" + anal.getListConstanst().get(token.getIndex()));
+
+
                 System.out.printf("POP\n");
                 tokens.pop();
                 tree.next();
@@ -183,7 +190,7 @@ public class Grammar {
 
             for (int i = rule.size() - 1; i >= 0; i--) {
                 Symbol s = rule.get(i);
-                if (!s.getValue().equals(Token.TokensType.e.toString()))
+                if (!s.getType().equals(Token.TokensType.e.toString()))
                     st.push(rule.get(i));
             }
         }
@@ -204,7 +211,7 @@ public class Grammar {
 
         formatter.format("FIRST:\n");
         for (Symbol nonTerm : firsts.keySet()) {
-            formatter.format("FIRST(%s) = [", nonTerm.getValue());
+            formatter.format("FIRST(%s) = [", nonTerm.getType());
 
             for (Token.TokensType first : firsts.get(nonTerm)) {
                 formatter.format("%s ", first);

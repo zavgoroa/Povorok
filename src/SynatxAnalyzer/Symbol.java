@@ -7,16 +7,27 @@ import LexicalAnalyzer.Token;
  */
 public class Symbol {
 
-    private String  value;
-    private boolean isTerminal;
-
-    public Symbol(String value) {
-        this.value = value;
-        this.isTerminal = Token.isTokenType(value);
-    }
+    private String type;
 
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    private String value;
+    private boolean isTerminal;
+
+    public Symbol(String value) {
+        this.type = value;
+        this.isTerminal = Token.isTokenType(value);
+        this.value = "_";
+    }
+
+    public String getType() {
+        return type;
     }
 
     public boolean isTerminal() {
@@ -25,11 +36,15 @@ public class Symbol {
 
     @Override
     public String toString() {
-        return value + (isTerminal ? "(t)" : "(n)");
+        return type + (isTerminal ? "[" + value + "]" + "(t)" : "(n)");
+    }
+
+    public String toStringClear() {
+        return type + (isTerminal ? "(t)" : "(n)");
     }
 
     @Override
     public boolean equals(Object obj) {
-        return value.equals(((Symbol)obj).getValue());
+        return type.equals(((Symbol)obj).getType());
     }
 }

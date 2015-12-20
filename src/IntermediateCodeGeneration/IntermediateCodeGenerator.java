@@ -35,7 +35,7 @@ public class IntermediateCodeGenerator {
 
         @Override
         public String toString() {
-            return keySymb + " " + firstRuleSymbol;
+            return keySymb.toStringClear() + " " + firstRuleSymbol.toStringClear();
         }
     }
 
@@ -216,7 +216,7 @@ public class IntermediateCodeGenerator {
             Symbol childNode = (Symbol) child.getUserObject();
 
             if (childNode.isTerminal())
-                return childNode.getValue();
+                return childNode.getType();
             else {
                 return processNode(child);
             }

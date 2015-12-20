@@ -1,7 +1,6 @@
 package SynatxAnalyzer;
 
 import LexicalAnalyzer.Token;
-import com.sun.javafx.fxml.expression.Expression;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.*;
@@ -27,7 +26,7 @@ public class SyntaxTree {
         //System.out.printf("add children to %s\n", pointer);
 
         //if empty symbol
-        if (children.size() == 1 && children.get(0).getValue().equals(Token.TokensType.e.toString())) {
+        if (children.size() == 1 && children.get(0).getType().equals(Token.TokensType.e.toString())) {
             pointer.add(new DefaultMutableTreeNode(new Symbol(Token.TokensType.e.toString())));
             //System.out.printf("E!\n");
             next();
