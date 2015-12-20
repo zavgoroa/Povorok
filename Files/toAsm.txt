@@ -1,0 +1,46 @@
+>=/2
+>1st/1
+>ADD
+	mov ax, $1
+	add ax, $2
+	mov $3, ax
+	.
+>SUB/2
+	.
+>MUL/2
+	.
+>DIV/2
+	.
+>STDIN/1
+	.
+>STDOUT/1
+	.
+>bf
+	cmp $2 1
+	eq $1
+	.
+>defl
+	$1:
+	.
+>eq/2
+	mov ax $1
+	mov bx $2
+	cmp ax, bx
+	eq l1
+	mov %3 0
+	jmp l2:
+	l1:
+	mov %3 1
+	l2:
+	.
+>neq
+	.
+>gr
+	.
+>les
+	.
+>bzl/2 - перейти на 1 если 2 - ноль
+	.
+>jmp
+	jmp 1$
+	.

@@ -77,10 +77,10 @@ Condition > LES ID AND ID
 :>les c1 c3 .
 
 Statement > WHILE ID ID SRPT Statements UNTIL
-:defl c1 _
+:defl l1 _
 :bzl l2 c2
 :_ l2 c4
-:bp c1 c2
+:bp l1 c2
 :defl l2 _ .
 
 
