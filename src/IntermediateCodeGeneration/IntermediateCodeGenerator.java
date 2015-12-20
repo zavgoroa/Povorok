@@ -216,7 +216,11 @@ public class IntermediateCodeGenerator {
             Symbol childNode = (Symbol) child.getUserObject();
 
             if (childNode.isTerminal())
-                return childNode.getType();
+                if ((childNode.getType().equals(Token.TokensType.ID.toString()))
+                    ||(childNode.getType().equals(Token.TokensType.CI.toString())))
+                    return childNode.getValue();
+                else
+                    return childNode.getType();
             else {
                 return processNode(child);
             }
