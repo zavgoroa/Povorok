@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class SyntaxTree {
 
-    private DefaultMutableTreeNode pointer;
+    public DefaultMutableTreeNode pointer;
 
     public SyntaxTree(Symbol root) {
 
