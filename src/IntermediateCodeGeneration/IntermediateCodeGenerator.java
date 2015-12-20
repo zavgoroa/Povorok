@@ -19,6 +19,7 @@ import java.util.*;
 public class IntermediateCodeGenerator {
 
     private static int generatorCount = 0;
+    PrintWriter out;
 
     class RuleIdentity  {
         RuleIdentity(Symbol keySymb, Symbol firstRuleSymbol) {
@@ -57,7 +58,9 @@ public class IntermediateCodeGenerator {
 
     private Map<RuleIdentity, List<Triada>> triadas;
 
-    public IntermediateCodeGenerator(String relesFile, String charSet) throws IOException {
+    public IntermediateCodeGenerator(String relesFile, String charSet, PrintWriter out) throws IOException {
+        this.out = out;
+
         triadas = new TreeMap<>((o1, o2) -> {
             RuleIdentity first = o1;
             RuleIdentity second = o2;
@@ -196,7 +199,7 @@ public class IntermediateCodeGenerator {
                 outBuffer.append("_");
 
             if (!tr.operation.equals("_"))
-                System.out.println(outBuffer);
+                out.println(outBuffer);
 
             outBuffer.setLength(0);
         }
@@ -294,8 +297,11 @@ public class IntermediateCodeGenerator {
 
         System.out.println(gr.formatTree());
 
-        IntermediateCodeGenerator generator = new IntermediateCodeGenerator("Files/rules.txt", "Cp1251");
+        try (PrintWriter writer = new PrintWriter(new FileWriter("Files/intercode.obj"), true)) {
+        IntermediateCodeGenerator generator =
+                new IntermediateCodeGenerator("Files/rules.txt", "Cp1251", writer);
         generator.processNode(gr.getTree().getRoot(), "L_ENDPGM");
+        }
     }
 
     class LabelGenerator {
