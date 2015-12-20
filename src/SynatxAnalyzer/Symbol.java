@@ -20,9 +20,9 @@ public class Symbol {
     private String value;
     private boolean isTerminal;
 
-    public Symbol(String value) {
-        this.type = value;
-        this.isTerminal = Token.isTokenType(value);
+    public Symbol(String type) {
+        this.type = type;
+        this.isTerminal = Token.isTokenType(type);
         this.value = "_";
     }
 

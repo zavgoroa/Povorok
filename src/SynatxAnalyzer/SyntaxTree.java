@@ -34,7 +34,9 @@ public class SyntaxTree {
         }
 
         for (Symbol child : children) {
-            pointer.add(new DefaultMutableTreeNode(child));
+            Symbol ch = new Symbol(child.getType());
+            ch.setValue(child.getValue());
+            pointer.add(new DefaultMutableTreeNode(ch));
             //System.out.printf("%s ", child);
         }
 
