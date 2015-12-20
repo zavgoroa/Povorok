@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Povorok:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Povorok_jar</output-path>
+    <root id="archive" name="Povorok.jar">
+      <element id="module-output" name="Povorok" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../treelayout/antlr-3.1.2-1-jar-with-dependencies.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

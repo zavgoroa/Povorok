@@ -22,13 +22,14 @@ public class AsmGenerator {
         loadAsmRules(fileIn, charSet);
     }
 
-    public void parsInterCode(String fileName, String charSet, Analyzer anal) {
+    public void parsInterCode(String fileName, String charSet, Analyzer anal) throws IOException {
         StringBuilder outAsm = new StringBuilder();
-        prefix(outAsm, anal);
+        int sasha = 0;
+
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(fileName), charSet))) {
-
+            prefix(outAsm, anal);
             String line;
             while ((line = br.readLine()) != null) {
                 Scanner scan = new Scanner(line);
@@ -41,31 +42,73 @@ public class AsmGenerator {
                 String operand2 = scan.next();
                 String resultvar = scan.next();
 
-                outAsm.append(genAsm(operation, operand1, operand2, resultvar));
+                outAsm.append(genAsm(operation, operand1, operand2, resultvar, sasha++));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        postfix(outAsm, anal);
+        postfix(outAsm);
 
-        System.out.println(neRusskiy.neRusString(outAsm.toString()));
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName + ".ASM"), true)) {
+            writer.println(neRusskiy.neRusString(outAsm.toString()));
+        }
+
     }
 
-    private void postfix(StringBuilder outAsm, Analyzer anal) {
-        //TODO: footer
+    private void postfix(StringBuilder outAsm) {
+        outAsm.append("ret\n" +
+                "\t\tmain endp\n" +
+                "\tcode ends\n" +
+                "\tend main\n");
     }
 
-    private void prefix(StringBuilder outAsm, Analyzer anal) {
-        //TODO: asm prgm header
+    private void prefix(StringBuilder outAsm, Analyzer anal) throws IOException {
+        outAsm.append("" +
+                ";=============================================================================\t\n" +
+                "\tastack segment stack\n" +
+                "\t\tdw 500 dup(?)\n" +
+                "\tastack ends\n" +
+                "                       \n" +
+                ";=============================================================================\n" +
+                "\tdata segment\n" +
+                "\t      \tbuf        dw 16 dup(?) \n");
+
+        for (String id : anal.getListId()) {
+            outAsm.append(neRusskiy.neRusString(id));
+            outAsm.append(" DW   0\n");
+        }
+
+        for (int i = 0; i < IntermediateCodeGenerator.generatorCount; i++) {
+            outAsm.append("t");
+            outAsm.append(i);
+            outAsm.append(" DW   0\n");
+        }
+
+        outAsm.append("data ends" +
+                "\t\t");
+
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream("Files/asmHeader.asm")))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                outAsm.append(line);
+                outAsm.append("\n");
+            }
+        }
     }
 
-    public String genAsm(String op, String arg1, String arg2, String res) {
+    public String genAsm(String op, String arg1, String arg2, String res, int indexCount) {
 
         String asmRule = asmRules.get(op);
         asmRule = asmRule.replaceAll("\\$1", arg1);
         asmRule = asmRule.replaceAll("\\$2", arg2);
         asmRule = asmRule.replaceAll("\\$3", res);
+
+        asmRule = asmRule.replace("#1", "LABL@" + indexCount);
+        asmRule = asmRule.replace("#2", "LABLA@" + indexCount);
+        asmRule = asmRule.replace("#3", "LABLB@" + indexCount);
 
         return asmRule;
     }
@@ -109,7 +152,9 @@ public class AsmGenerator {
 
     public static void main(String[] args) throws IOException, TokenException {
 
-        FileInputStream fileStream = new FileInputStream("Files/source.chef");
+        String sourceFile = args[0];
+
+        FileInputStream fileStream = new FileInputStream(sourceFile);
         Analyzer analyzer = new Analyzer();
 
         if (!analyzer.parcingText(fileStream)) return;
@@ -156,7 +201,7 @@ public class AsmGenerator {
 
         System.out.println(gr.formatTree());
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter("Files/intercode.obj"), true)) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(sourceFile + ".obj"), true)) {
             IntermediateCodeGenerator generator =
                     new IntermediateCodeGenerator("Files/rules.txt", "Cp1251", writer);
             generator.processNode(gr.getTree().getRoot(), "L_ENDPGM");
@@ -164,7 +209,7 @@ public class AsmGenerator {
 
         neRusskiy.loadChars();
         AsmGenerator asm = new AsmGenerator("Files/toAsm.txt", "Cp1251");
-        asm.parsInterCode("Files/intercode.obj", "Cp1251", analyzer);
+        asm.parsInterCode(sourceFile + ".obj", "Cp1251", analyzer);
     }
 
 

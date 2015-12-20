@@ -1,8 +1,10 @@
 >=
-	mov $1, $2
+	mov ax, $2
+	mov $1, ax
 	.
 >1st
-	mov $3, $1
+	mov ax, $1
+	mov $3, ax
 	.
 >INDEX
 	.
@@ -18,11 +20,8 @@
 	.
 >MUL
 	mov ax, $1
-	sub $2
-    ;при умножении байтов результат помещается в ax;
-    ;при умножении слов результат помещается в пару dx:ax;
-    ;при умножении двойных слов результат помещается в пару edx:eax
-	mov $3, ax
+	mul $2
+    mov $3, ax
 	.
 >DIV
 	mov ax, $1
@@ -32,6 +31,10 @@
 >STDIN
 	.
 >STDOUT
+	mov ax, $1   
+	call far ptr int_to_s
+	mov dx, offset buf
+	call out_str
 	.
 >bf
 	cmp $2 1
@@ -40,56 +43,56 @@
 >defl
 	$1:
 	.
->eq/2
-	mov ax $1
-	mov bx $2
+>eq
+	mov ax, $1
+	mov bx, $2
 	cmp ax, bx
-	je l1
-	mov %3 0
-	jmp l2:
-	l1:
-	mov %3 1
-	l2:
+	je #1
+	mov $3, 0
+	jmp #2:
+	#1:
+	mov $3 1
+	#2:
 	.
 >neq
-	mov ax $1
-	mov bx $2
+	mov ax, $1
+	mov bx, $2
 	cmp ax, bx
-	jne l1
-	mov %3 0
-	jmp l2:
-	l1:
-	mov %3 1
-	l2:
+	jne #1
+	mov $3, 0
+	jmp #2:
+	#1:
+	mov $3 1
+	#2:
 	.
 >gr
-	mov ax $1
-    mov bx $2
+	mov ax, $1
+    mov bx, $2
     cmp ax, bx
-    jg l1
-    mov %3 0
-    jmp l2:
-    l1:
-    mov %3 1
-    l2:
+    jg #1
+    mov $3, 0
+    jmp #2:
+    #1:
+    mov $3 1
+    #2:
 	.
 >les
-	mov ax $1
-	mov bx $2
+	mov ax, $1
+	mov bx, $2
 	cmp ax, bx
-	jle l1
-	mov %3 0
-	jmp l2:
-	l1:
-	mov %3 1
-	l2:
+	jle #1
+	mov $3, 0
+	jmp #2:
+	#1:
+	mov $3 1
+	#2:
 	.
 >bzl
-	mov ax $2
+	mov ax, $2
 	cmp ax, 0
-	jne l2
+	jne #2
 	jmp $1
-	l2:
+	#2:
 	.
 >jmp
 	jmp $1

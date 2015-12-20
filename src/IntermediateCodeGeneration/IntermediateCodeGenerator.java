@@ -18,7 +18,7 @@ import java.util.*;
 @SuppressWarnings("SpellCheckingInspection")
 public class IntermediateCodeGenerator {
 
-    private static int generatorCount = 0;
+    public static int generatorCount = 0;
     PrintWriter out;
 
     class RuleIdentity  {
@@ -169,7 +169,7 @@ public class IntermediateCodeGenerator {
         Symbol firstChildValue = (Symbol) children.nextElement().getUserObject();
 
         RuleIdentity t = new RuleIdentity(curNodeValue, firstChildValue);
-        //System.out.printf("Try to find by: %s\n", t);
+        System.out.printf("Try to find by: %s\n", t);
         List<Triada> ruleTriadas = triadas.get(t);
 
         if (ruleTriadas == null) {
@@ -304,7 +304,7 @@ public class IntermediateCodeGenerator {
         }
     }
 
-    class LabelGenerator {
+    public class LabelGenerator {
         private final int id;
 
         LabelGenerator(int id) {
@@ -316,7 +316,7 @@ public class IntermediateCodeGenerator {
         }
     }
 
-    static int generateGeneratorId() {
+    public static int generateGeneratorId() {
         return generatorCount++;
     }
 

@@ -105,6 +105,7 @@ public class Grammar {
     public void initFirsts() {
 
         for (Symbol nonTerm : grammaTable.keySet()) {
+            System.out.println("FIRST nonTerm: " + nonTerm);
             firsts.put(nonTerm, getFirst(nonTerm));
         }
 

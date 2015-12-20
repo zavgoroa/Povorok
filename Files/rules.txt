@@ -1,12 +1,17 @@
 Recipe > RecipeTitle Ingredient_List Method
-:_ c1 c2 .
-RecipeTitle > ID SRPT
-:_ _ _ .
+:_ _ c1
+:_ _ c2 .
 Ingredient_List > INGR SRPT IngredientLine
 :_ _ c2 .
+
+IngredientLine > e
+:_ _ _ .
 IngredientLine > ID CI Measure IngredientLine
 := c0 c1
 :_ _ c3 .
+
+RecipeTitle > ID SRPT
+:_ _ _ .
 
 Measure > M_G
 :_ _ _ .
@@ -19,14 +24,11 @@ Measure > M_L
 Measure > M_SHT
 :_ _ _ .
 
-IngredientLine > e
-:_ _ _ .
-
 Method > METHOD SRPT Statements
 :_ _ c2 .
 
 Statements > Statement SRPT Statements
-:_ _ c0 .
+:_ _ c0
 :_ _ c2 .
 Statements > e
 :_ _ _ .
@@ -64,7 +66,7 @@ Statement > IF Condition SRPT Statements ElseStatement
 
 
 ElseStatement > ELSE Statements ENDIF
-:_ _ c1.
+:_ _ c1 .
 ElseStatement > ENDIF
 :_ _ _ .
 
