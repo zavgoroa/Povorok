@@ -11,7 +11,7 @@ public class Analyzer {
 
     Map<String, ProcessorSequenceWord> mapProcessSeqWord;
     ArrayList<Token> listTokens;
-    ArrayList<Double> listConstans;
+    ArrayList<Integer> listConstans;
     ArrayList<String> listId;
 
     public Analyzer() throws TokenException, IOException {
@@ -154,7 +154,7 @@ public class Analyzer {
     }
 
     private void addConstants(String word) {
-        Double value = Double.parseDouble(word);
+        Integer value = Integer.parseInt(word);
         listConstans.add(value);
         addToken(Token.TokensType.CI, listConstans.size() - 1);
     }
